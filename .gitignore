@@ -1,0 +1,12 @@
+node_modules
+dist
+.vite
+tools
+tmp
+*.local
+*.log
+.DS_Store
+
+doc/*
+output/*
+scripts/*
