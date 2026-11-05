@@ -52,13 +52,25 @@ export function CartPage() {
     document.title = "购物袋｜青屿 QINGYU";
   }, []);
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+  useEffect(() => {
+    setForm((current) => {
+      if (current.name || current.email || !user) return current;
+      return {
+        ...current,
+        name: user.name,
+        email: user.email,
+      };
+    });
+  }, [user]);
+
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (!/^1\d{10}$/.test(form.phone)) {
       notify("请检查手机号", "请输入 11 位中国大陆手机号");
       return;
     }
-    const order = checkout(form);
+    const order = await checkout(form);
+    if (!order) return;
     setSubmittedOrder(order);
     setStep("bag");
     window.scrollTo({ top: 0, behavior: "smooth" });

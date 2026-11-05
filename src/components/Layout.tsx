@@ -414,7 +414,7 @@ export function Layout() {
         <div className="site-footer__bottom">
           <p>© 2026 青屿生活科技有限公司 · 本网站为课程设计演示</p>
           <div>
-            <button type="button" onClick={() => notify("隐私说明", "演示站不会上传任何个人数据")}>隐私政策</button>
+              <button type="button" onClick={() => notify("隐私说明", "课程演示站仅保存完成订单和账户展示所需的数据")}>隐私政策</button>
             <button type="button" onClick={() => notify("服务条款", "本演示站不提供真实交易服务")}>服务条款</button>
           </div>
         </div>

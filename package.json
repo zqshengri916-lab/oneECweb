@@ -4,10 +4,19 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "node server/dev.mjs",
+    "dev:web": "vite",
+    "dev:api": "node --watch server/index.mjs",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "start": "node server/index.mjs",
+    "db:reset": "node server/reset-db.mjs",
+    "seed:export": "node server/export-seed.mjs",
+    "screenshots": "node server/capture-screenshots.mjs",
+    "test:api": "node --test server/*.test.mjs",
+    "test:perf": "node server/performance-test.mjs",
+    "test:web": "node server/browser-check.mjs"
   },
   "dependencies": {
     "lucide-react": "^0.468.0",

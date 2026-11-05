@@ -37,19 +37,13 @@ export function AccountPage() {
     setError("");
   };
 
-  const submit = (event: FormEvent) => {
+  const submit = async (event: FormEvent) => {
     event.preventDefault();
-    const success =
+    const message =
       mode === "login"
-        ? login(email, password)
-        : register(name, email, password);
-    if (!success) {
-      setError(
-        mode === "login"
-          ? "请输入有效邮箱和至少 6 位密码"
-          : "请填写称呼、有效邮箱和至少 6 位密码",
-      );
-    }
+        ? await login(email, password)
+        : await register(name, email, password);
+    setError(message ?? "");
   };
 
   if (!user) {
@@ -110,7 +104,7 @@ export function AccountPage() {
                 </p>
                 <h2>{mode === "login" ? "欢迎回来" : "创建你的青屿账户"}</h2>
                 <p className="auth-card__hint">
-                  这是课程演示账户，不会上传或验证个人信息。
+                  账户信息将保存到课程项目数据库，密码仅保存加盐散列。
                 </p>
               </div>
               {mode === "register" && (
@@ -153,7 +147,7 @@ export function AccountPage() {
                 <ArrowRight size={17} />
               </button>
               <p className="auth-terms">
-                继续即代表你理解这是前端功能演示，所有数据仅保存在本机浏览器。
+                继续即代表你理解这是课程演示系统，不接入真实支付服务。
               </p>
             </form>
           </div>
@@ -249,7 +243,7 @@ export function AccountPage() {
             <div><dt>称呼</dt><dd>{user.name}</dd></div>
             <div><dt>邮箱</dt><dd>{user.email}</dd></div>
             <div><dt>账户类型</dt><dd>青屿校园会员</dd></div>
-            <div><dt>数据存储</dt><dd>仅本机浏览器</dd></div>
+            <div><dt>数据存储</dt><dd>SQLite 数据库</dd></div>
           </dl>
           <a href="mailto:hello@qingyu.example" className="text-link">
             联系账户支持

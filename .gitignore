@@ -3,6 +3,9 @@ dist
 .vite
 tools
 tmp
+data/*.db
+data/*.db-shm
+data/*.db-wal
 *.local
 *.log
 .DS_Store

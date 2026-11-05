@@ -82,6 +82,7 @@ export function StudioPage() {
     deleteArticle,
     resetCatalog,
     notify,
+    databaseStatus,
   } = useStore();
   const [tab, setTab] = useState<"products" | "articles">("products");
   const [query, setQuery] = useState("");
@@ -140,7 +141,7 @@ export function StudioPage() {
     setArticleDraft({ ...article, body: [...article.body] });
   };
 
-  const saveProduct = (event: FormEvent<HTMLFormElement>) => {
+  const saveProduct = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (!productDraft) return;
     const slugConflict = products.some(
@@ -151,7 +152,8 @@ export function StudioPage() {
       setFormError("商品链接标识已存在，请换一个英文标识");
       return;
     }
-    upsertProduct(productDraft);
+    const saved = await upsertProduct(productDraft);
+    if (!saved) return;
     notify(
       products.some((product) => product.id === productDraft.id)
         ? "商品已更新"
@@ -161,7 +163,7 @@ export function StudioPage() {
     setProductDraft(null);
   };
 
-  const saveArticle = (event: FormEvent<HTMLFormElement>) => {
+  const saveArticle = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (!articleDraft) return;
     const body = articleBody
@@ -180,7 +182,8 @@ export function StudioPage() {
       setFormError("文章链接标识已存在，请换一个英文标识");
       return;
     }
-    upsertArticle({ ...articleDraft, body });
+    const saved = await upsertArticle({ ...articleDraft, body });
+    if (!saved) return;
     notify(
       articles.some((article) => article.id === articleDraft.id)
         ? "文章已更新"
@@ -191,16 +194,18 @@ export function StudioPage() {
     setArticleBody("");
   };
 
-  const confirmDeleteProduct = (product: Product) => {
+  const confirmDeleteProduct = async (product: Product) => {
     if (window.confirm(`确认删除「${product.name}」？此操作不可撤销。`)) {
-      deleteProduct(product.id);
+      const deleted = await deleteProduct(product.id);
+      if (!deleted) return;
       notify("商品已删除", product.name);
     }
   };
 
-  const confirmDeleteArticle = (article: NewsArticle) => {
+  const confirmDeleteArticle = async (article: NewsArticle) => {
     if (window.confirm(`确认删除「${article.title}」？此操作不可撤销。`)) {
-      deleteArticle(article.id);
+      const deleted = await deleteArticle(article.id);
+      if (!deleted) return;
       notify("文章已删除", article.title);
     }
   };
@@ -213,17 +218,17 @@ export function StudioPage() {
           返回网站
         </Link>
         <div>
-          <p className="eyebrow">QINGYU OPERATIONS / DEMO</p>
+          <p className="eyebrow">QINGYU OPERATIONS / DATABASE</p>
           <h1>运营工作台</h1>
-          <p>商品与资讯管理演示 · 数据仅保存在当前浏览器</p>
+          <p>商品与资讯管理 · 数据实时写入 SQLite 数据库</p>
         </div>
         <button
           className="button button--outline"
           type="button"
-          onClick={() => {
+          onClick={async () => {
             if (window.confirm("确认将商品与资讯恢复为初始示例数据？")) {
-              resetCatalog();
-              notify("内容已重置");
+              const reset = await resetCatalog();
+              if (reset) notify("内容已重置", "数据库已恢复初始示例数据");
             }
           }}
         >
@@ -242,8 +247,8 @@ export function StudioPage() {
           <span>文章总数<strong>{articles.length}</strong></span>
         </div>
         <div>
-          <span className="studio-dot" />
-          <span>本地数据<strong>运行正常</strong></span>
+          <span className={`studio-dot ${databaseStatus !== "connected" ? "is-offline" : ""}`} />
+          <span>SQLite<strong>{databaseStatus === "connected" ? "已连接" : databaseStatus === "connecting" ? "连接中" : "连接异常"}</strong></span>
         </div>
       </div>
 

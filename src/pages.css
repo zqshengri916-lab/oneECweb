@@ -987,6 +987,11 @@
   box-shadow: 0 0 0 5px rgba(92, 154, 108, 0.12);
 }
 
+.studio-dot.is-offline {
+  background: #c9684f;
+  box-shadow: 0 0 0 5px rgba(201, 104, 79, 0.12);
+}
+
 .studio-panel {
   overflow: hidden;
   background: var(--paper);
